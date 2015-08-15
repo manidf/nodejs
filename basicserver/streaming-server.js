@@ -24,25 +24,15 @@ var server = http.createServer(function(req, res) {
     fs.exists(filepath, function(file_exists) {
        if(file_exists) {
            // read and serve
-           //fs.readFile(filepath, function(error, content) {
-           //   if(error) {
-           //       res.writeHead(500);
-           //       res.end();
-           //   } else {
-           //       res.writeHead(200, { 'Content-Type' : contentType });
-           //       res.end(content, 'utf-8');
-           //   }
-           //})
-
-           res.writeHead(200, {'Content-Type' : contentType});
-           //instantiate a stream
-           var streamFile = fs.createReadStream(filepath).pipe(res);
-
-           // create event listener to handle errors
-           streamFile.on('error', function(){
-              res.writeHead(500);
-               res.end();
-           });
+           fs.readFile(filepath, function(error, content) {
+              if(error) {
+                  res.writeHead(500);
+                  res.end();
+              } else {
+                  res.writeHead(200, { 'Content-Type' : contentType });
+                  res.end(content, 'utf-8');
+              }
+           })
 
        } else {
            res.writeHead(404);
