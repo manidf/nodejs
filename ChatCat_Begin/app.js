@@ -2,7 +2,9 @@
 // require express frame work
 var express = require('express'),
     app = express(),
-    path = require('path');
+    path = require('path'),
+    cookieParser = require('cookie-parser'),
+    session = require('express-session');
 
 // set hogan view paths to point to views directory
 app.set('views', path.join(__dirname, 'views'));
@@ -14,14 +16,25 @@ app.set('view engine', 'html');
 // set express static assets lets express find all static files in ./public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// define route
+// Session
+app.use(cookieParser());
+app.use(session({ secret: 'catscanfly'}));
+
+// define route, and invoke the express function with two arguments that reference the module exports function
+require('./routes/routes.js')(express, app);
+
+/*
 app.route('/').get(function(req, res, next){
    //res.send( '<h1>Hello World!</h1>' );
     // respones.render, render index file inside the views folder
-    res.render('index', {})
+    res.render('index', {title: 'Welcome to ChatCAT!'})
 });
+*/
 
 // define port number and log to console using callback function
 app.listen(3000, function(){
    console.log('ChatCAT working on port 3000');
 });
+
+// Mongolab db
+// mongodb://chatcatuser:silver09@ds059682.mongolab.com:59682/chatcat
