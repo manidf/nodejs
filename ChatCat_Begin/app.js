@@ -18,7 +18,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Session
 app.use(cookieParser());
-app.use(session({ secret: 'catscanfly'}));
+app.use(session({ secret: 'catscanfly', saveUnitialized:true, resave:true}));
+//saveUnitialized: init a session even when it is not modified
+//resave: resaves a session even though it has not been modified
 
 // define route, and invoke the express function with two arguments that reference the module exports function
 require('./routes/routes.js')(express, app);
