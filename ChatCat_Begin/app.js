@@ -5,7 +5,8 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
     config = require('./config/config.js'),
-    ConnectMongo = require('connect-mongo')(session);
+    ConnectMongo = require('connect-mongo')(session),
+    mongoose = require('mongoose').connect(config.dbURL);
 
 // set hogan view paths to point to views directory
 app.set('views', path.join(__dirname, 'views'));
@@ -23,6 +24,28 @@ app.use(session({ secret: 'catscanfly', saveUnitialized:true, resave:true}));
 //saveUnitialized: init a session even when it is not modified
 //resave: resaves a sesasion even though it has not been modified
 
+
+//mongodb schema
+var userSchema = mongoose.Schema({
+    username:String,
+    password:String,
+    fullname:String
+});
+
+//monogodb model
+var Person = mongoose.model('users', userSchema);
+
+// store a record
+var Mannuel = new Person({
+    username: 'Mannuel',
+    password: 'silver09',
+    fullname: 'Mannuel Ferreira'
+});
+
+Mannuel.save(function(err){
+    console.log("Done!")
+});
+
 // Creating configurations DEV and PRODUCTION modes
 var env = process.env.NODE_ENV || 'development';
 if(env === 'development') {
@@ -34,7 +57,8 @@ if(env === 'development') {
         secret: config.sessionSecret,
         // set to new instance of connect mongo
         store: new ConnectMongo({
-            url: config.dbURL, //url in json file to connect to database
+            //url: config.dbURL, //url in json file to connect to database
+            mongoose_connection:mongoose.connection[0],
             stringify: true // session values converted to string
         })
     }));
@@ -53,8 +77,8 @@ app.route('/').get(function(req, res, next){
 
 // define port number and log to console using callback function
 app.listen(3000, function(){
-   console.log('ChatCAT working on port 3000');
-    console.log(env);
+    console.log('ChatCAT working on port 3000');
+    console.log('Mode ', env);
 });
 
 // Mongolab db
