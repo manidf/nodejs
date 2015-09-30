@@ -1,4 +1,4 @@
-module.exports = function(passport, FacebookStrategy, config, mongoose){
+module.exports = function(passport, FacebookStrategy, config, mongoose) {
 
   // user schema that facebook calls for and stores in our mongolab account
   var chatUser = new mongoose.schema({
@@ -13,13 +13,13 @@ module.exports = function(passport, FacebookStrategy, config, mongoose){
   // serialized and deseriz
   passport.serializeUser(function(user, done){
     done(null,user.id);
-  })
+  });
 
   passport.deserializedUser(function(id, done){
     userModel.findById(id, function(err, user){
       done(err, user);
     })
-  })
+  });
 
   passport.use(new FacebookStrategy({
     clientID: config.fb.appID,
@@ -47,4 +47,4 @@ module.exports = function(passport, FacebookStrategy, config, mongoose){
       }
     })
   }));
-}
+};

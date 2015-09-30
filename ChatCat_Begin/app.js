@@ -8,7 +8,7 @@ var express = require('express'),
     ConnectMongo = require('connect-mongo')(session),
     mongoose = require('mongoose').connect(config.dbURL),
     passport = require('passport'),
-    FacebookStrategy = require('passport-facebook').Stategy;
+    FacebookStrategy = require('passport-facebook').Strategy;
 
 // set hogan view paths to point to views directory
 app.set('views', path.join(__dirname, 'views'));
@@ -66,11 +66,15 @@ if(env === 'development') {
     }));
 }
 
-// require
+// invoke passport init and session
+app.use(passport.initialize());
+app.use(passport.session());
+
+// require passport
 require('./auth/passportAuth.js')(passport, FacebookStrategy, config, mongoose);
 
 // define route, and invoke the express function with two arguments that reference the module exports function
-require('./routes/routes.js')(express, app);
+require('./routes/routes.js')(express, app, passport);
 
 /*
 app.route('/').get(function(req, res, next){
